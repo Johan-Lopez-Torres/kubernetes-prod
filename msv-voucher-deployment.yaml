@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msv-voucher
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: msv-voucher
+  template:
+    metadata:
+      labels:
+        app: msv-voucher
+    spec:
+      containers:
+        - name: msv-voucher
+          image: johan1405/microservicio-voucher:latest
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: msv-voucher-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: msv-voucher-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: msv-voucher
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000

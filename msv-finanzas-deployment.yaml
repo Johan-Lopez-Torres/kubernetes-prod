@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msv-finanzas
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: msv-finanzas
+  template:
+    metadata:
+      labels:
+        app: msv-finanzas
+    spec:
+      containers:
+        - name: msv-finanzas
+          image: johan1405/microservicio-finanzas:latest
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: msv-finanzas-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: msv-finanzas-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: msv-finanzas
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
